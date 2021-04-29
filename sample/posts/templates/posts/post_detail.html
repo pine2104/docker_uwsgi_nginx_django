@@ -1,0 +1,39 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+
+
+<div>
+    <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        {% if object.author == user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'postupdate' object.id %}">Update</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'postdelete' object.id %}">Delete</a>
+          </div>
+        {% endif %}
+      </div>
+
+        <h1 class="article-title" style="font-family: 'Josefin Sans', sans-serif;">{{ object.title }}</h1>
+        <div class="row justify-content-start">
+            <div class="col-auto">
+                <h1 class="article-header">
+                <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+                {{ object.author }} on {{ object.date_posted|date:"F d, Y" }}</h1>
+            </div>
+            <div class="col" style="margin-top: 1.0vmin;">
+                {% if object.file %}
+                <a href="{{ object.file.url }}">download</a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <h1 class="article-content">{{ object.content|linebreaks }}</h1>
+    </div>
+  </article>
+</div>
+
+{% endblock content %}
+

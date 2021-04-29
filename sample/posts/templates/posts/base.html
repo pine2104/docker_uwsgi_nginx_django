@@ -1,0 +1,295 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="{% static '/favicon.ico' %}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/post.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+<!--    primer table-->
+    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+<!--      font-family-->
+<!--    'Titillium Web', sans-serif-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
+<!--    'Josefin Sans', sans-serif;-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap" rel="stylesheet">
+<!--    Noto Sans TC for Chinese-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&family=Noto+Sans+TC:wght@700&display=swap" rel="stylesheet">
+<!--    Chango for post title-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chango&family=Josefin+Sans:wght@700&family=Noto+Sans+TC:wght@700&display=swap" rel="stylesheet">
+
+<!--    'PT Mono', monospace for post title and content-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chango&family=Josefin+Sans:wght@700&family=Noto+Sans+TC:wght@700&family=PT+Mono&display=swap" rel="stylesheet">
+
+<!--    'Nanum Gothic Coding', monospace; for content-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&family=PT+Mono&display=swap" rel="stylesheet">
+
+    <script src="{% static 'main.js' %}" async></script>
+    <script>
+
+    </script>
+
+
+    <style>
+    body {
+      background:#f9f9f9;
+    }
+
+    button {
+        font-family: 'Titillium Web', sans-serif !important;
+        font-size: 3.0vmin !important;
+    }
+    li {
+      text-align:center;
+    }
+
+
+    .ntu-img {
+      height: 9.0vmin;
+      width: 55.0vmin;
+    }
+
+    </style>
+</head>
+
+
+
+<body>
+  <nav class="navbar sticky-top navbar-expand navbar-light bg-white" style="height: 15vmin;">
+      <div class="container" style="padding-left=-10vw; margin-top: -0vmin; margin-left: -0vmin;">
+          <div class="col-auto" id="posts" style="margin-top: 0vmin;margin-left: 0vw;">
+              <b-button v-b-toggle.sidebar-backdrop variant="light">☰</b-button>
+                <b-sidebar
+                  id="sidebar-backdrop"
+                  title="Sidebar with backdrop"
+                  :backdrop-variant="variant"
+                  no-header
+                  backdrop
+                  shadow>
+<!--                    search bar-->
+                    <div class="container">
+                        <form method='POST' style="margin-top: 5.5vmin;">
+                        {% csrf_token %}
+                        {{ postFilter.form.title }}
+                        <button class="btn btn-outline-light" style="margin-top: -9.5vmin; margin-left: 37.5vmin;" type="submit"><img class="search-img" src="{% static 'search.svg' %}"></button>
+                        </form>
+                    </div>
+
+                    <ul class="nav flex-column">
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo1">
+                            <img class="rounded-circle article-img" src="{% static 'DNA.png' %}">
+                            Primer
+                        </button>
+                        <div id="demo1" class="collapse">
+                            <li><a class="dropdown-item" href="{% url 'primerinput' %}">Primer Input</a></li>
+                            <li><a class="dropdown-item" href="{% url 'primer' %}">Primer List</a></li>
+                            <li><a class="dropdown-item" href="{% url 'seqvector' %}">Seq. Extract</a></li>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo2">
+                            <img class="rounded-circle article-img" src="{% static 'protocols.jpg' %}">
+                            Protocols
+                        </button>
+                        <div id="demo2" class="collapse">
+                            <li><a class="dropdown-item" href="{% url 'protocols_TPM' %}">TPM</a></li>
+                            <li><a class="dropdown-item" href="{% url 'protocols_FRET' %}">FRET</a></li>
+                            <li><a class="dropdown-item" href="{% url 'protocols_CoSMoS' %}">CoSMoS</a></li>
+                            <li><a class="dropdown-item" href="{% url 'protocols_OT' %}">OT</a></li>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo3">
+                            <img class="rounded-circle article-img" src="{% static 'journal.jpeg' %}">
+                            Journal Club
+                        </button>
+                        <div id="demo3" class="collapse">
+                            <li><a class="dropdown-item" href="{% url 'JCcreate' %}">Create</a></li>
+                            <li><a class="dropdown-item" href="{% url 'JC' %}">View</a></li>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo4">
+                            <img class="rounded-circle article-img" src="{% static 'form.png' %}">
+                            Lab Common
+                        </button>
+                        <div id="demo4" class="collapse">
+                            <li><a class="dropdown-item" href="{% url 'fileupload' %}">Upload files</a></li>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo5">
+                            <img class="rounded-circle article-img" src="{% static 'links.png' %}">
+                            Other Links
+                        </button>
+                        <div id="demo5" class="collapse">
+                            <li><a class="dropdown-item" href="https://teamleogo1017.slack.com/">Slack</a></li>
+                            <li><a class="dropdown-item" href="https://drive.google.com/drive/u/1/my-drive">Google Drive</a></li>
+                            <li><a class="dropdown-item" href="https://calendar.google.com/calendar/u/1/r?pli=1">Google Calendar</a></li>
+                            <li><a class="dropdown-item" href="https://www.dropbox.com/home">Dropbox</a></li>
+                            <li><a class="dropdown-item" href="https://sites.google.com/site/hwlilab/">Lab's Website</a></li>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#demo6">
+                            <img class="rounded-circle article-img" src="{% static 'github.png' %}">
+                            Source code
+                        </button>
+                        <div id="demo6" class="collapse">
+                            <li><a class="dropdown-item" href="https://github.com/hwligroup">Github</a></li>
+                        </div>
+                    </ul>
+                </b-sidebar>
+          </div>
+          <div class="col-auto" style="margin-left: -5.0vmin; padding-left: -0vmin;">
+              <a href="{% url 'homepage' %}"><img class="ntu-img" src="{% static 'lab_icon5.png' %}"></a>
+          </div>
+          <div class="col-auto align-self-end" style="margin-top: -5vmin; margin-left: 0vmin;">
+              <dd class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {% if user.is_authenticated %}
+                      <img class="rounded-circle article-img" style="margin-top: -0.0vmin;" src="{{ user.profile.image.url }}">
+                  </a>
+                      <dl class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <dd><a class="dropdown-item" href="{% url 'postcreate' %}">Create</a></dd>
+
+                          <dd><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></dd>
+                          <dd><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></dd>
+                      </dl>
+                      {% else %}
+                      <img class="rounded-circle article-img" style="margin-top: -0.0vmin;" src="{% static 'blank.jpg' %}"></a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                      </ul>
+                      {% endif %}
+              </dd>
+          </div>
+      </div>
+  </nav>
+
+  <hr>
+
+  <div>
+      <div class="row">
+          <div class="col-2">
+          </div>
+<!--          content-->
+          <div class="col-9">
+              {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+              </div>
+              {% endfor %}
+              {% endif %}
+              {% block content %}
+              {% endblock %}
+          </div>
+<!--          blank-->
+          <div class="col-1">
+          </div>
+      </div>
+  </div>
+
+
+
+<footer class="bd-footer p-3 p-md-5 mt-5 bg-light text-center text-sm-start">
+  <div class="container">
+      <div class="col" style="text-align:center;">
+          <dd>
+              <dl>
+                  <a href="/admin"><img class="rounded-circle footer-img" src="{% static 'admin.webp' %}"></a>
+                  <a href="https://github.com/pine2104/django_project"><img class="rounded-circle footer-img" src="{% static 'github.png' %}"></a>
+                  <a href="https://github.com/pine2104/django_project/issues"><img class="rounded-circle footer-img" src="{% static 'issue.png' %}"></a>
+
+                  <p>Code licensed <a href="https://github.com/pine2104/django_project/blob/develop/LICENSE">MIT</a></p>
+                  <h1 class="footer-text">Hung-Wen Li's Lab, Department of Chemistry at National Taiwan University</h1>
+              </dl>
+          </dd>
+      </div>
+  </div>
+</footer>
+
+
+<script id="accessibility-widget-loader" data-account="AM9nYaJOao" src="https://cdn.userway.org/widget.js"></script><link href="https://fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet" property="stylesheet" type="text/css" media="all">
+
+		<script type="text/javascript">
+		if(typeof revslider_showDoubleJqueryError === "undefined") {
+			function revslider_showDoubleJqueryError(sliderID) {
+				var err = "<div class='rs_error_message_box'>";
+				err += "<div class='rs_error_message_oops'>Oops...</div>";
+				err += "<div class='rs_error_message_content'>";
+				err += "You have some jquery.js library include that comes after the Slider Revolution files js inclusion.<br>";
+				err += "To fix this, you can:<br>&nbsp;&nbsp;&nbsp; 1. Set 'Module General Options' ->  'jQuery & OutPut Filters' -> 'Put JS to Body' to on";
+				err += "<br>&nbsp;&nbsp;&nbsp; 2. Find the double jQuery.js inclusion and remove it";
+				err += "</div>";
+			err += "</div>";
+				jQuery(sliderID).show().html(err);
+			}
+		}
+        </script>
+
+
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script>
+      $('.sub-menu ul').hide();
+        $(".sub-menu a").click(function () {
+            $(this).parent(".sub-menu").children("ul").slideToggle("100");
+            $(this).find(".right").toggleClass("fa-caret-up fa-caret-down");
+        });
+      </script>
+
+<!--    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
+
+
+
+  <!-- jQuery -->
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+<!--      <script>-->
+<!--      $('.sub-menu ul').hide();-->
+<!--        $(".sub-menu a").click(function () {-->
+<!--            $(this).parent(".sub-menu").children("ul").slideToggle("100");-->
+<!--            $(this).find(".right").toggleClass("fa-caret-up fa-caret-down");-->
+<!--        });-->
+<!--        new Vue({ el: '#posts' });-->
+<!--      </script>-->
+
+    <script>
+      new Vue({ el: '#posts' });
+    </script>
+
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    -->
+
+
+</body>
+</html>

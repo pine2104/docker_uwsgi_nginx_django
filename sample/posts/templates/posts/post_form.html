@@ -1,0 +1,44 @@
+
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="content-section">
+        <form action='' method="POST" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create Your Post</legend>
+                <div class="row">
+                    <div class="col-6">
+                        {{ form.title|as_crispy_field }}
+                    </div>
+                    <div class="col-4">
+                        {{ form.category|as_crispy_field }}
+                    </div>
+                    <div class="col-1" style="margin-top: 1.5vmin;">
+                        <a href="{% url 'category_create' %}">add category</a>
+                    </div>
+                    <div class="col-1" style="margin-top: 1.5vmin;">
+                        <a style="color: #ff0000;" href="{% url 'category' %}">delete category</a>
+                    </div>
+
+
+
+
+                    <div class="col-6">
+                        {{ form.file }}
+                    </div>
+                    <div class="col-6">
+                        {{ form.private|as_crispy_field }}
+                    </div>
+                </div>
+                {{ form.content|as_crispy_field }}
+            </fieldset>
+            <p></p>
+            <div>
+                <button class="btn btn-outline-info" type="submit">Post</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+

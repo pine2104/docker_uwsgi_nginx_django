@@ -1,0 +1,53 @@
+{% extends 'posts/base.html' %}
+
+<!--{% block title %} Creat New List {% endblock %}-->
+{% block content %}
+
+
+<h1>{{ object.name }}</h1>
+<div>
+<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'primerupdate' object.id %}">Update</a>
+<a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'primerdelete' object.id %}">Delete</a>
+</div>
+<div class="content-section">
+    <p><strong>Sequence (5' to 3'):</strong> {{ object.sequence }}</p>
+
+    <p><strong>5'Modification:</strong> {{ object.modification_5 }}</p>
+
+    <p><strong>3'Modification:</strong> {{ object.modification_3 }}</p>
+
+    <p><strong>internal Modification:</strong> {{ object.modification_internal }}</p>
+
+    <p><strong>Project For:</strong> {{ object.project }}</p>
+
+    <p><strong>Primer Length:</strong> {{ object.length }}</p>
+
+<!--    <p><strong>Vector:</strong> {{ object.vector }}</p>-->
+
+<!--    <p><strong>In_Vector? :</strong> {{ object.in_vector }}</p>-->
+
+<!--    <p><strong>Position (forward=positive, reverse=negative):</strong> {{ object.position }}</p>-->
+
+    <p><strong>Who ordered:</strong> {{ object.who_ordered }}</p>
+
+    <p><strong>Purpose:</strong> {{ object.purpose }}</p>
+
+    <p><strong>Price (NT$):</strong> {{ object.price }}</p>
+
+    <p><strong>Volumn (uL, 100 uM):</strong> {{ object.volumn }}</p>
+
+    <p><strong>Produced Inc.:</strong> {{ object.brand }}</p>
+
+    <p><strong>Created at:</strong> {{ object.created_at }}</p>
+
+    <p><strong>Edit at:</strong> {{ object.edit_at }}</p>
+
+    <p><strong>Created by:</strong> {{ object.created_by }}</p>
+
+    <p><strong>Edit by:</strong> {{ object.edit_by }}</p>
+
+
+</div>
+
+
+{% endblock %}

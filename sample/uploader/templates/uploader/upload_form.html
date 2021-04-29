@@ -1,0 +1,29 @@
+
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div style="padding:40px;margin:40px;border:1px solid #ccc">
+    <h1 class="article-title">File Upload</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.upload_file }}
+      <input type="submit" value="upload" />
+    </form><hr>
+    <ul>
+    {% for document in documents %}
+        <li>
+
+            <a href="{{ document.upload_file.url }}">{{ document.upload_file.name }}</a>
+            <small>({{ document.upload_file.size|filesizeformat }}) - {{document.upload_date}}</small>
+
+            <a href="{% url 'delete' document.pk %}">delete</a>
+
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
+
+<!--<input type="submit" value="Delete">-->

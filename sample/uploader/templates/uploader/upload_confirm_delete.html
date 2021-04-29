@@ -1,0 +1,19 @@
+
+
+{% extends "posts/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <h1 class="jc-title" style="font-size: 5.0vmin;">Delete File</h1>
+            <h2 class="jc-title" style="font-size: 3.0vmin;">Are you sure you to delete the file "{{ object.upload_file.name }}"</h2>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+            <a class="btn btn-outline-secondary" href="{% url 'fileupload' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

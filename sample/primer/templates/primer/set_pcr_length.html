@@ -1,0 +1,81 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+
+
+<form action="" method="POST">
+    {% csrf_token %}
+    Set Length of PCR: <input type="number" name="L_set"><br><br>
+    Tolerated Length of PCR: <input type="number" name="tol"><br><br>
+    <input style="margin: 30px 0px 20px 0px" type="submit" class="btn btn-primary" value="cal pcr" name="cal" />
+
+
+ <h1>Primer Search Result</h1>
+    <div class="row">
+
+    <div class="col-6">
+
+        <table class="table table-light table-hover">
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Name</th>
+                <th scope="col">5'Modifi</th>
+                <th scope="col">Length</th>
+    <!--            <th scope="col">Direction</th>-->
+                <th scope="col">Position</th>
+                <th scope="col">PCR Product (bp)</th>
+
+            </tr>
+
+            {% for primer in primerFilter.qs %}
+            {% if primer.position <= 0 %}
+            <tr>
+                <td><input type="checkbox" value={{primer.id}} name="check_box"/></td>
+            <th scope="row"><a href="{% url 'primerinfo' primer.pk %}">{{primer.name}}</th>
+                <td>{{primer.modification_5}}</td>
+                <td>{{primer.length}}</td>
+    <!--            <td>{{primer.dir}}</td>-->
+                <td>{{primer.position}}</td>
+                <td>{{primer.L_pcr}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="col-6">
+
+        <table class="table table-light table-hover">
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Name</th>
+                <th scope="col">5'Modifi</th>
+                <th scope="col">Length</th>
+    <!--            <th scope="col">Direction</th>-->
+                <th scope="col">Position</th>
+                <th scope="col">PCR Product (bp)</th>
+
+            </tr>
+
+            {% for primer in primerFilter.qs %}
+            {% if primer.position > 0 %}
+            <tr>
+                <td><input type="checkbox" value={{primer.id}} name="check_box"/></td>
+            <th scope="row"><a href="{% url 'primerinfo' primer.pk %}">{{primer.name}}</th>
+                <td>{{primer.modification_5}}</td>
+                <td>{{primer.length}}</td>
+    <!--            <td>{{primer.dir}}</td>-->
+                <td>{{primer.position}}</td>
+                <td>{{primer.L_pcr}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+</form>
+
+
+
+{% endblock %}

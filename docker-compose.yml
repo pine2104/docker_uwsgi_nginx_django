@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  proxy:
+    container_name: dj3_nginx
+    build: ./proxy
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      # Using the named volume from the Django project.
+      - api_data:/docker_api
+      - ./log:/var/log/nginx
+    depends_on:
+      - app
+
+  app:
+    container_name: dj3_web
+    build: ./sample
+    restart: always
+    command: uwsgi --ini uwsgi.ini
+    volumes:
+      - api_data:/docker_api
+    environment:
+        - PYTHONUNBUFFERED=TURE
+
+volumes:
+  api_data:

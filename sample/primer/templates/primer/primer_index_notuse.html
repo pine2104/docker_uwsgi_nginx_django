@@ -1,0 +1,65 @@
+
+{% extends 'posts/base.html' %}
+
+{% block content %}
+<div style="margin:30px 0px 100px 0px;" class="content-section">
+
+    <form method='POST'>
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6">
+                Name: {{ primerFilter.form.name }}
+            </div>
+            <div class="col-6">
+                Project For: {{ primerFilter.form.project }}
+            </div>
+
+            <div class="col-3">
+                5'Modification: {{ primerFilter.form.modification_5 }}
+            </div>
+            <div class="col-3">
+                3'Modification: {{ primerFilter.form.modification_3 }}
+            </div>
+            <div class="col-4">
+                internal-Modification: {{ primerFilter.form.modification_internal }}
+            </div>
+            <div class="col-12">
+                Sequence: {{ primerFilter.form.sequence }}
+            </div>
+            <div class="col-12">
+                Purpose: {{ primerFilter.form.purpose }}
+            </div>
+
+
+        </div>
+
+    <input style="margin: 30px 0px 20px 0px" type="submit" class="btn btn-primary" value="Search" />
+    </form>
+</div>
+
+
+
+ <h1>Primer Search</h1>
+        <table class="table table-light table-hover">
+            <tr>
+                <th scope="col">Primer Name</th>
+                <th scope="col">Project For</th>
+
+                <th scope="col">5'-Modification</th>
+                <th scope="col">Sequence (5' to 3')</th>
+
+            </tr>
+
+            {% for primer in primerFilter.qs %}
+            <tr>
+            <th scope="row"><a href="{% url 'primerinfo' primer.pk %}">{{primer.name}}</th>
+                <td>{{primer.project}}</td>
+                <td>{{primer.modification_5}}</td>
+                <td>{{primer.sequence}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+
+{% endblock %}
