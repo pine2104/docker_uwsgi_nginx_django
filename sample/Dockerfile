@@ -5,6 +5,4 @@ RUN mkdir /docker_api
 WORKDIR /docker_api
 COPY . /docker_api
 
-
-
 RUN pip install --no-cache-dir -r requirements.txt
