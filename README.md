@@ -7,6 +7,8 @@
 
   1.Install
 
+  If you have not installed virtual environment,
+
   `$ sudo apt-get install python3-venv`
 
   2.Create
@@ -20,12 +22,12 @@
   
   `$ source myvenv/bin/activate`
 
-  If succeed,
+  If succeeded,
 
   `(myvenv) computer@user:~$ `
 
 
-* **Install required packages**
+* **Install required packages in venv**
 
   `$ pip install -r path/to/requirements.txt`
 
@@ -44,14 +46,15 @@
     Use environment variable to store and get sensitive information.
     Do not recommend that directly type in setting.py rather than use `os.getenv('email_server')`.
     
-    **email_server:**
+    1.**email_server:**
   
     `$ export email_server="testemail@gmail.com"`
   
     `$ export email_password="password"`
     
-    **SECRET_KEY:**
-  You can generate your SECRET_KEY using [this][5].
+    2.**SECRET_KEY:**
+  
+    You can generate your SECRET_KEY using [this][5].
   
     `$ export SECRET_KEY="!&(u2hn8bfs#v2ow_1!6=)olmud18%%ea@70gjld*7+@k=n)if"`
 
@@ -65,6 +68,10 @@
     `$ echo "SECRET_KEY"`
 
 
+* **Create Django project**
+
+  `$ django-admin startproject sample`
+
 
 * **Run server**
 
@@ -72,8 +79,51 @@
   
   `$ python manage.py runserver 0.0.0.0:port`
 
-  Because of the [bad performance][6], we will use [uWSGI][7] to deploy our web-application latter.
+  Because of the [bad performance][6], we will use [uWSGI][7] to deploy our web-application later on.
 
+
+* **Create new app in your project**
+
+  `$ python manage.py startapp primer`
+
+  Now, you have created a primer-app 
+
+
+* **Migrate Django model to the database**
+
+  After finish designing models.py, you have to collect all changes,
+  
+  `$ python manage.py makemigrations`
+
+  therefore, migrate to your database.
+
+  `$ python manage.py migrate`
+
+
+> **HTML and CSS**
+
+* **Load static files**
+
+  Under debug mode (`DEBUG = True` in settings.py), django will 
+  automatically find your static files in sample/primer/static.
+  
+  You should add `{% load static %}` in the beginning of your .html,
+  so load css file by 
+  
+  `<link rel="stylesheet" type="text/css" href="{% static 'posts/post.css' %}">
+  `
+  
+  **1.Load .js file**
+  
+  `<script src="{% static 'main.js' %}" async></script>`
+
+  **2.Load images**
+
+  `<img src="{% static 'image.png' %}">`
+
+> **My applications**
+
+Some demonstrations show below.
 
 * **Export primers**
 
@@ -104,7 +154,7 @@
 
 ![Image][54]
 
-  First, pick a plasmid to use as PCR template. 
+  First, pick a plasmid as a PCR template. 
   If not exist, you can press `Create New Vector` button. 
 
 ![Image][55]
@@ -129,17 +179,109 @@
 
 ![Image][58]
 
-  Choose a pair of pirmers.
+  Choose a pair of primers.
 
 ![Image][59]
 
-  And press `cal pcr` button.
+  Next, press `cal pcr` button.
 
 ![Image][60]
 
   Result rendered.
 
 ![Image][61]
+
+
+* **Upload files with progress bar**
+  
+  Use javascript to listen the progress of data transmitting.
+  
+![Image][62]
+
+  in /sample/uploader/static/main.js,
+
+  ```
+  const uploadForm = document.getElementById('upload-form')
+  const input = document.getElementById('upload')
+  const file = document.getElementById('id_upload_file')
+  
+  console.log(input)
+  
+  const alertBox = document.getElementById('alert-box')
+  const imageBox = document.getElementById('image-box')
+  const progressBox = document.getElementById('progress-box')
+  const cancelBox = document.getElementById('cancel-box')
+  const cancelBtn = document.getElementById('cancel-btn')
+  
+  const csrf = document.getElementsByName('csrfmiddlewaretoken')
+  
+  input.addEventListener('click', ()=>{
+      progressBox.classList.remove('not-visible')
+      cancelBox.classList.remove('not-visible')
+  
+      const img_data = file.files[0]
+      const url = URL.createObjectURL(img_data)
+      console.log(img_data)
+      const fd = new FormData()
+      fd.append('csrfmiddlewaretoken', csrf[0].value)
+      fd.append('image', img_data)
+      $.ajax({
+          type:'POST',
+          url: uploadForm.action,
+          enctype: 'multipart/form-data',
+          data: fd,
+          beforeSend: function(){
+              console.log('before')
+              alertBox.innerHTML= ""
+              imageBox.innerHTML = ""
+          },
+          xhr: function(){
+              const xhr = new window.XMLHttpRequest();
+              xhr.upload.addEventListener('progress', e=>{
+                  // console.log(e)
+                  if (e.lengthComputable) {
+                      const percent = e.loaded / e.total * 100
+                      console.log(percent)
+                      progressBox.innerHTML = `<div class="progress">
+                                                  <div class="progress-bar" role="progressbar" style="width: ${percent}%" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+                                              </div>
+                                              <p>${percent.toFixed(1)}%</p>`
+                  }
+  
+              })
+              cancelBtn.addEventListener('click', ()=>{
+                  xhr.abort()
+                  setTimeout(()=>{
+                      uploadForm.reset()
+                      progressBox.innerHTML=""
+                      alertBox.innerHTML = ""
+                      cancelBox.classList.add('not-visible')
+                  }, 2000)
+              })
+              return xhr
+          },
+          success: function(response){
+              console.log(response)
+              imageBox.innerHTML = `<img src="${url}" width="300px">`
+              alertBox.innerHTML = `<div class="alert alert-success" role="alert">
+                                      Successfully uploaded below
+                                  </div>`
+              cancelBox.classList.add('not-visible')
+          },
+          error: function(error){
+              console.log(error)
+              alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
+                                      Ups... something went wrong
+                                  </div>`
+          },
+          cache: false,
+          contentType: false,
+          processData: false,
+      })
+  }) 
+  ```
+
+
 
 > **uWSGI**
 
@@ -172,12 +314,11 @@
 
 > **NGINX**
 
-NGINX (engine X) is a web server that use for serving static files, e.g. CSS, images, .js files. 
+NGINX is a web server with high efficiency for serving static files, e.g. CSS, images, .js files. 
 
 * **Install**
 
   `$ sudo apt-get install nginx`
-
 
 
 * **Uninstall**
@@ -190,6 +331,8 @@ NGINX (engine X) is a web server that use for serving static files, e.g. CSS, im
   
   3.`$ sudo apt-get autoremove`
 
+
+There are some required settings for convenience of using NGINX.
 
 * **Locate uwsgi_params at /etc/nginx**
 
@@ -305,6 +448,8 @@ NGINX (engine X) is a web server that use for serving static files, e.g. CSS, im
     api_data:
   ```
 
+  Volume can be used to mount files in the container to your host-computer.
+  Therefore, you can synchronize files in your host-computer.
 
 > **Frequently used Linux command**
 
@@ -321,11 +466,11 @@ NGINX (engine X) is a web server that use for serving static files, e.g. CSS, im
 
     `$ docker ps -aq`
 
-* **Stop all running containters**
+* **Stop all running containers**
 
     `$ docker stop $(docker ps -aq)`
 
-* **Remove all containters**
+* **Remove all containers**
 
     `$ docker rm $(docker ps -aq)`
 
@@ -336,6 +481,11 @@ NGINX (engine X) is a web server that use for serving static files, e.g. CSS, im
 * **Force Remove images**
 
     `$ docker images | grep ID | awk '{print $1 ":" $2}' | xargs docker rmi`
+
+* **Remove all volumes**
+
+    `$ docker volume rm $(docker volume ls)`
+
 
 
 [1]: https://www.djangoproject.com/start/
@@ -359,3 +509,4 @@ NGINX (engine X) is a web server that use for serving static files, e.g. CSS, im
 [59]: doc/img/set_pairs_2.png
 [60]: doc/img/set_pairs_3.png
 [61]: doc/img/set_pairs_4.png
+[62]: doc/img/progress_bar.png

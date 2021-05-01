@@ -1,4 +1,3 @@
-console.log('hello world')
 const uploadForm = document.getElementById('upload-form')
 const input = document.getElementById('upload')
 const file = document.getElementById('id_upload_file')
@@ -14,18 +13,15 @@ const cancelBtn = document.getElementById('cancel-btn')
 const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
 input.addEventListener('click', ()=>{
-console.log('0')
     progressBox.classList.remove('not-visible')
     cancelBox.classList.remove('not-visible')
 
     const img_data = file.files[0]
     const url = URL.createObjectURL(img_data)
     console.log(img_data)
-console.log('1')
     const fd = new FormData()
     fd.append('csrfmiddlewaretoken', csrf[0].value)
     fd.append('image', img_data)
-console.log('2')
     $.ajax({
         type:'POST',
         url: uploadForm.action,
