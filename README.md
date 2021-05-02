@@ -194,6 +194,103 @@ Some demonstrations show below.
 
 * **Upload files with progress bar**
   
+
+  1.Upload multiple files at a time
+
+  models.py,
+  ```
+  from django.db import models
+  
+  # Create your models here.
+  
+  class Upload(models.Model):
+      upload_file = models.FileField() # .name, .size, .url, .open, .close, .save, .delete,
+      upload_date = models.DateTimeField(auto_now_add =True)
+  ```
+  forms.py,
+  ```
+  from django import forms
+  from django.forms import ClearableFileInput
+  from .models import Upload
+  
+  
+  class FileUpload(forms.ModelForm):
+      class Meta:
+          model = Upload
+          fields = ['upload_file']
+          widgets = {
+              'upload_file': ClearableFileInput(attrs={'multiple': True}),
+          }
+  ```
+
+  views.py,
+
+  ```
+  from django.shortcuts import render
+  from django.contrib.auth.decorators import login_required
+  from .models import Upload
+  from .forms import FileUpload
+  
+  @login_required #only when user log in, this function works
+  def upload_file(request):
+      all_files = Upload.objects.all() # for listing all stored files
+      if request.method == 'POST':
+           form = FileUpload(request.POST, request.FILES)
+           files = request.FILES.getlist('upload_file')
+           if form.is_valid():
+               for f in files: # save each file sequentially
+                   file_instance = Upload(upload_file=f)
+                   file_instance.save()
+      else:
+           form = FileUpload()
+  
+      return render(request, 'uploader/upload_files.html', {'form': form, 'all_files':all_files})
+  ```
+
+  upload_files.html,
+  
+  ```
+  {% extends "posts/base.html" %}
+  {% load crispy_forms_tags %}
+  {% block content %}
+  
+      <div id="alert-box"></div>
+      <div id="image-box"></div>
+  
+      <h1 class="jc-title" style="font-size: 5.0vmin;">Upload Files </h1>
+      <h1 class="article-header">
+          Use for directly transmitting data or files. Please delete it after finishing work for saving storage .
+      </h1>
+      <form id="upload-form" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.upload_file }}
+          <button id="upload" type="submit" class="btn btn-primary">Upload Files</button>
+      </form>
+  
+      <div id="progress-box" class="not-visible">progress</div>
+      <div id="cancel-box" class="not-visible">
+          <button id="cancel-btn" class="btn btn-danger">cancel</button>
+      </div>
+  
+      <div class="containter">
+      <ul>
+          {% for document in all_files %}
+              <li>
+  
+                  <a href="{{ document.upload_file.url }}">{{ document.upload_file.name }}</a>
+                  <small>({{ document.upload_file.size|filesizeformat }}) - {{document.upload_date}}</small>
+  
+                  <a href="{% url 'delete' document.pk %}">delete</a>
+  
+              </li>
+          {% endfor %}
+          </ul>
+  
+      </div>
+  {% endblock content %}
+  ```
+
+  2.Progress bar
   Use javascript to listen the progress of data transmitting.
   
 ![Image][62]
@@ -398,6 +495,9 @@ There are some required settings for convenience of using NGINX.
     COPY . /docker_api
     RUN pip install --no-cache-dir -r requirements.txt
     ```
+    Change ENV to meet your email_server and secret key.
+   
+
 2. server (proxy/Dockerfile)
   
     ```
