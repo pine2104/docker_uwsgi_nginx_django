@@ -21,8 +21,7 @@ from .pcr import hamming_distance, match_primer, plotpcr, setL_pcr, get_prop_pri
 class PrimerFormView(FormView):
     template_name = 'primer/primer_form.html'
     form_class = PrimerForm
-    # model = Primer
-    success_url = reverse_lazy('primerlist')  # back to url name: fileupload (in urls)
+    success_url = reverse_lazy('primer')  # back to url name: fileupload (in urls)
 
     def form_valid(self, form): # FormView does not save, you need to add
         form.instance.created_by = self.request.user

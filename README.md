@@ -32,6 +32,12 @@
   `$ pip install -r path/to/requirements.txt`
 
 > **Django**
+
+  Templates: CSS, Bootstrap, BootstrapVue
+
+  Functions: Register, Login, Logout, Forget password, Create/Delete/Update posts and Search.
+
+
 * **Add super-user**
 
     `$ python3 manage.py createsuperuser`
@@ -124,6 +130,11 @@
 > **My applications**
 
 Some demonstrations show below.
+
+* **Basic**
+
+  **Register, Login, Logout, Forget password, Create/Delete/Update posts and Search posts.** 
+  
 
 * **Export primers**
 
